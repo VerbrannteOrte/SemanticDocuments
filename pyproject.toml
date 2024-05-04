@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "semdoc"
+version = "0.1.0"
+description = "Exract semantic information from documents"
+authors = ["Michael Volz <info@michael-volz.eu>"]
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+rich = "^13.7.1"
+layoutparser = {extras = ["layoutmodels"], version = "^0.3.4"}
+typer = "^0.12.1"
+opencv-python = "^4.9.0.80"
+torchvision = "^0.17.2"
+torch = "^2.2.2"
+#detectron2 = {path = "detectron2", develop = false}
+pytesseract = "^0.3.10"
+urwid = "^2.6.11"
+
+[tool.poetry.scripts]
+semdoc = "semdoc:run"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
