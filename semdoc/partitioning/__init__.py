@@ -1,7 +1,8 @@
 import cv2
 import copy
 
-class Partitioning():
+
+class Partitioning:
     def __init__(self, rects):
         self.rects = rects
 
@@ -9,5 +10,5 @@ class Partitioning():
         image = copy.copy(image)
         for rect in self.rects:
             x, y, w, h = rect
-            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 1)
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 1)
         return image

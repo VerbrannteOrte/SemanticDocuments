@@ -2,6 +2,7 @@ from pathlib import Path
 
 import cv2
 
+
 class Document:
     def __init__(self, path: Path):
         self.path = path
@@ -23,3 +24,7 @@ class Page:
 
     def as_bitmap(self):
         return self.image
+
+
+def load_document(path: Path):
+    return Document(path)
