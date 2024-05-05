@@ -3,8 +3,14 @@ import copy
 
 
 class Partitioning:
-    def __init__(self, rects):
-        self.rects = rects
+    def __init__(self):
+        self.areas = []
+
+    def add(self, partition):
+        self.areas.append(partition)
+
+    def base_regions(self):
+        return iter(self.areas)
 
     def visualize(self, image):
         image = copy.copy(image)

@@ -1,9 +1,10 @@
 class Pipeline:
     def __init__(self):
-        pass
+        self.analyzers = []
 
     def add(self, analyzer):
-        pass
+        self.analyzers.append(analyzer)
 
     def run(self, document):
-        pass
+        for analyzer in self.analyzers:
+            analyzer.run(document)

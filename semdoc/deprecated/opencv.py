@@ -1,6 +1,6 @@
 import cv2
 
-from . import Partitioning
+from semdoc.document.partitioning import Partitioning
 
 
 class OpenCVPartitioner:

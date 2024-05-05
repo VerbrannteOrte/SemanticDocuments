@@ -6,7 +6,7 @@ import typer
 from typing_extensions import Annotated
 
 import semdoc.document
-from semdoc.partitioning.opencv import OpenCVPartitioner
+from semdoc.deprecated.opencv import OpenCVPartitioner
 from semdoc.tesseract import run_tesseract
 
 
