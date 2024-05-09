@@ -13,6 +13,7 @@
             scheme-basic
             blindtext
             koma-script
+            xcolor
           ;
         })
       );
@@ -52,7 +53,7 @@
               export TK_LIBRARY="${p.tk}/lib/${p.tk.libPrefix}"
               export LD_LIBRARY_PATH=${p.lib.makeLibraryPath [
                      p.stdenv.cc.cc
-                     p.libz
+#                     p.libz
                      p.libGL
                      p.glib
                      p.xorg.libSM
