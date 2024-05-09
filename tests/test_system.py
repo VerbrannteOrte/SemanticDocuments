@@ -11,7 +11,7 @@ def test_multi_object():
     src = Path("test.pdf")
     doc = document.load_document(src)
 
-    pipeline = analyzer.Pipeline()
+    pipeline = analyzer.Sequencial()
     segmentizer = opencv.Analyzer()
     pipeline.add(segmentizer)
     ocr = tesseract.Analyzer()

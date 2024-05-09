@@ -1,3 +1,3 @@
-from .pipeline import Pipeline
+from .sequencial import Sequencial
 
-__all__ = ['Pipeline']
+__all__ = ['Sequencial']

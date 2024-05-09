@@ -1,4 +1,4 @@
-class Pipeline:
+class Sequencial:
     def __init__(self):
         self.analyzers = []
 
