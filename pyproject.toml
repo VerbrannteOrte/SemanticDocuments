@@ -21,9 +21,12 @@ torch = "^2.2.2"
 #detectron2 = {path = "detectron2", develop = false}
 pytesseract = "^0.3.10"
 urwid = "^2.6.11"
+seaborn = "^0.13.2"
 
 [tool.poetry.scripts]
-semdoc = "semdoc:run"
+semdoc = "semdoc.cli:run"
+semdoc_opencv = "semdoc.deprecated.opencv2:segment_image_into_blocks"
+semdoc_tesseract = "semdoc.deprecated.tesseract:run"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"

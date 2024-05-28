@@ -3,9 +3,7 @@ from typing import Annotated
 
 import typer
 
-from semdoc import document
-from semdoc import analyzer
-from semdoc import output
+from semdoc import input
 
 
 def main(
@@ -18,4 +16,8 @@ def main(
         ),
     ],
 ):
-    doc = document.load_document(infile)
+    doc = input.load_document(infile)
+
+
+def run():
+    typer.run(main)

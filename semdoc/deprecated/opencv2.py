@@ -1,8 +1,11 @@
 import cv2
 import numpy as np
+import sys
 
 
-def segment_image_into_blocks(image_path):
+def segment_image_into_blocks():
+    image_path = sys.argv[1]
+
     rects = []
     # Read the image
     image = cv2.imread(image_path)
@@ -16,7 +19,7 @@ def segment_image_into_blocks(image_path):
     )
 
     # Use morphology to enhance the blocks, e.g., dilate to make the contours of blocks connect
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (30, 23))
     dilate = cv2.dilate(thresh, kernel, iterations=1)
     erode = cv2.erode(thresh, kernel, iterations=1)
 
@@ -35,4 +38,5 @@ def segment_image_into_blocks(image_path):
     cv2.imshow("Segmented Blocks", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    cv2.imwrite("out.png", image)
     return rects

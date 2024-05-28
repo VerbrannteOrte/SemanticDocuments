@@ -1,4 +1,9 @@
+import sys
 import pytesseract
+from rich import pretty
+import cv2
+import seaborn
+import copy
 
 
 class TesseractBlock:
@@ -13,10 +18,25 @@ class TesseractBlock:
         self.children = []
 
     def __repr__(self):
-        return f"TB({self.level}, {repr(self.children)})"
+        return f"TB({self.level}:{self.left}.{self.top}:{self.width}.{self.height}, {repr(self.children)})"
 
     def add(self, block):
         self.children.append(block)
+
+    def _visualize(self, img):
+        steps = self.level - 1
+        color = (255 - 63 * steps, 100 + 38 * steps, 0)
+        colormap = seaborn.color_palette()
+        color = [round(c * 255) for c in colormap[self.level]]
+        pos1 = (self.left, self.top)
+        pos2 = (self.left + self.width, self.top + self.height)
+        cv2.rectangle(img, pos1, pos2, color, 1)
+
+    def visualize_boundaries(self, img, level=0):
+        if self.level == level or level == 0:
+            self._visualize(img)
+        for child in self.children:
+            child.visualize_boundaries(img, level=level)
 
 
 def to_block(data, i):
@@ -80,3 +100,25 @@ def run_tesseract(img):
         line.add(word)
 
     return pages
+
+
+def run():
+    img = cv2.imread(sys.argv[1])
+    pages = run_tesseract(img)
+    pretty.pprint(pages, expand_all=True)
+
+    level_descriptors = [
+        "page",
+        "block",
+        "paragraph",
+        "line",
+        "word",
+    ]
+    for level in range(1, 6):
+        for page in pages:
+            level_img = copy.copy(img)
+            page.visualize_boundaries(level_img, level=level)
+            caption = f"Level {level_descriptors[level - 1]}"
+            cv2.imshow(caption, level_img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
