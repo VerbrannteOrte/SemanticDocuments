@@ -2,10 +2,9 @@ from PIL import Image
 import numpy as np
 
 from . import document
-from . import containers
 
 
-class Region(containers.Bag):
+class Region:
     def __init__(
         self,
         document: document.Document,
@@ -21,7 +20,9 @@ class Region(containers.Bag):
         self.y = y
         self.width = w
         self.height = h
-        super().__init__()
+
+    def is_simple(self):
+        return True
 
     def __members(self):
         return (self.document, self.page_no, self.x, self.y, self.width, self.height)
@@ -36,23 +37,31 @@ class Region(containers.Bag):
         """TODO This is maybe wrong. Not sure if Region should be mutable or not"""
         return hash(self.__members())
 
+    def __deepcopy__(self, memo):
+        """Do not copy the document"""
+        return Region(
+            self.document, self.page_no, self.x, self.y, self.width, self.height
+        )
+
     def _box_coord(self):
         return (self.x, self.y, self.x + self.width, self.y + self.height)
 
     def approx(self, other):
         if type(other) is not type(self):
             return False
-        if other.document != self.document or self.page_no != other.page_no:
+        if other.document is not self.document:
             return False
-        x_tollerance = self.document.get_pages()[self.page_no - 1].width / 1000
-        y_tollerance = self.document.get_pages()[self.page_no - 1].height / 1000
-        close = [
+        if self.page_no != other.page_no:
+            return False
+        x_tollerance = self.document.get_geometry(self.page_no)["width"] / 1000
+        y_tollerance = self.document.get_geometry(self.page_no)["height"] / 1000
+        similar = [
             abs(self.x - other.x) < x_tollerance,
             abs(self.y - other.y) < y_tollerance,
             abs(self.x + self.width - other.x - other.width) < x_tollerance,
             abs(self.y + self.height - other.y - other.height) < y_tollerance,
         ]
-        return all(close)
+        return all(similar)
 
     def get_bitmap(self) -> Image:
         return self.document.get_region_bitmap(
@@ -86,7 +95,7 @@ class Region(containers.Bag):
         return Region(self.document, self.page_no, new_x, new_y, w, h)
 
     def __repr__(self):
-        return f"Region({self.document!r}, {self.page_no},{self.x}, {self.y}, {self.width}, {self.height}"
+        return f"Region({self.document!r}, {self.page_no}, {self.x}, {self.y}, {self.width}, {self.height})"
 
     def to_dict(self):
         dict = super().to_dict()
@@ -98,7 +107,3 @@ class Region(containers.Bag):
             height=self.height,
         )
         return dict
-
-
-class Page(Region):
-    pass

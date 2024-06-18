@@ -1,6 +1,6 @@
-from .region import Region, Page
-from .element import Element
+from .region import Region
+from .element import Element, ElementType
 from .document import Document
 from .containers import Sequence, Bag
 
-__all__ = ["Document", "Region", "Element", "Sequence", "Bag", "Page"]
+__all__ = ["Document", "Region", "Element", "ElementType", "Sequence", "Bag"]

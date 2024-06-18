@@ -14,9 +14,9 @@ def analyzer():
 def simple_text():
     doc = utils.loadpath("simple_text.png")
     boxes = [
-        Region(doc, 1, 544, 508, 401, 76),
-        Region(doc, 1, 544, 636, 1460, 260),
-        Region(doc, 1, 544, 910, 1460, 551),
+        Region(doc, 0, 544, 508, 401, 76),
+        Region(doc, 0, 544, 636, 1460, 260),
+        Region(doc, 0, 544, 910, 1460, 551),
     ]
     return {
         "doc": doc,
@@ -27,7 +27,7 @@ def simple_text():
 def test_analyzer():
     doc = utils.loadpath("simple_text.png")
     analyzer = Analyzer()
-    structure = analyzer.run(doc)
+    structure = analyzer.run(doc.physical_structure())
     dict = structure.to_dict()
     boxes = structure.children[0].children
     assert len(boxes) == 3
@@ -35,8 +35,13 @@ def test_analyzer():
 
 def test_boxes_simple_text(analyzer, simple_text):
     doc = simple_text["doc"]
-    page = doc.children[0]
-    analyzed = analyzer.run(doc)
-    boxes = sorted(list(analyzed.children[0].children), key=lambda r: r.y)
-    for a, b in zip(boxes, simple_text["boxes"]):
+    analyzed = analyzer.run(doc.physical_structure())
+    partitions = analyzed.children[0].children
+    regions = sorted(map(lambda p: p.region(), partitions), key=lambda r: r.y)
+    box_doc = simple_text["boxes"][0].document
+    assert box_doc == doc
+    assert box_doc is doc
+    for a, b in zip(regions, simple_text["boxes"]):
+        assert a.document == b.document
+        assert a.document is b.document
         assert a.approx(b)

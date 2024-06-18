@@ -14,13 +14,14 @@ import utils
 def test_multi_object(tmp_path):
     src = utils.docpath("simple_text.png")
     doc = reader.load_path(src)
+    physical = doc.physical_structure()
 
     pipeline = analyzer.Sequential()
     segmentizer = opencv.Analyzer()
     pipeline.add(segmentizer)
     ocr = tesseract.Analyzer()
     pipeline.add(ocr)
-    result = pipeline.run(doc)
+    result = pipeline.run(physical)
 
     dest = tmp_path / Path("simple_text.xml")
     xml_output = output.get_formatter("xml")(result)

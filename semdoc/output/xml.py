@@ -1,6 +1,6 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
-from semdoc.structure import Document, Region, Page
+from semdoc.structure import Document, Region, ElementType as EType
 
 
 class XMLFormatter:
@@ -12,23 +12,27 @@ class XMLFormatter:
     def encode_element(self, element, parent=None):
         attrib = {}
         tag = "Element"
-        if type(element) is Document:
-            tag = "Document"
-        elif type(element) is Page:
-            tag = "Page"
-            attrib["page_no"] = str(element.page_no)
-        elif type(element) is Region:
-            tag = "Region"
-            attrib["x"] = str(element.x)
-            attrib["y"] = str(element.y)
-            attrib["width"] = str(element.width)
-            attrib["height"] = str(element.height)
+        match element.category:
+            case EType.Document:
+                tag = "Document"
+            case EType.Partition:
+                tag = "Region"
+                region = element.get_property("region")
+                attrib["x"] = str(region.x)
+                attrib["y"] = str(region.y)
+                attrib["width"] = str(region.width)
+                attrib["height"] = str(region.height)
+            case EType.Page:
+                tag = "Page"
+                page_no = element.get("page_no")
+                if page_no:
+                    attrib["page_no"] = str(page_no)
         if parent is None:
             node = ET.Element(tag, attrib)
         else:
             node = ET.SubElement(parent, tag, attrib)
         node.text = element.get_text()
-        for child in element.children_ordered():
+        for child in element.iter_children():
             self.encode_element(child, node)
         return node
 

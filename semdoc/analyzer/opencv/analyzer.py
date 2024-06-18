@@ -1,6 +1,13 @@
 import cv2
+import copy
 
 from semdoc.structure import Region
+from semdoc.structure.element import Element, ElementType
+
+
+def is_page(e: Element):
+    category = e.category
+    return category == ElementType.Page
 
 
 class Analyzer:
@@ -44,7 +51,11 @@ class Analyzer:
         return partitions
 
     def run(self, structure):
-        for region in structure.iter_regions():
-            for new_region in self.partition_region(region):
-                region.add(new_region)
-        return structure
+        out = copy.deepcopy(structure)
+        for element in out.iter_children(filter=is_page):
+            region = element.region()
+            for partition in self.partition_region(region):
+                e = Element(ElementType.Partition)
+                e.set_property("region", partition, "opencv")
+                element.add(e)
+        return out
