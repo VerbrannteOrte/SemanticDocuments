@@ -17,7 +17,14 @@ class ElementType(StrEnum):
     TextArea = auto()  # a physical box containing text
     TableArea = auto()  # a physical box containig the depiction of a table
     Partition = auto()  # a physical area of some significance
+    TextLine = auto()  # a physical area containing a continuous line of text
     Table = auto()  # a logical table
+
+
+def geometric_sorter(element):
+    region = element.region()
+    x, y = region.x, region.y
+    return x + y * 5
 
 
 # class Element:
@@ -36,12 +43,6 @@ class ElementType(StrEnum):
 
 #     def get_text(self):
 #         return ""
-
-
-def geometric_sorter(element):
-    region = element.region()
-    x, y = region.x, region.y
-    return x + y * 5
 
 
 class Element:
@@ -152,3 +153,8 @@ class Property:
 
     def __str__(self):
         return f"{self.key}: {self.value} ({self.source}: {self.confidence})"
+
+
+def is_page(e: Element):
+    category = e.category
+    return category == ElementType.Page

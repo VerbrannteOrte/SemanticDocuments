@@ -3,25 +3,12 @@ import pytest
 from semdoc.analyzer.opencv import Analyzer
 from semdoc.structure import Region
 import utils
+from documents import simple_text
 
 
 @pytest.fixture
 def analyzer():
     return Analyzer()
-
-
-@pytest.fixture
-def simple_text():
-    doc = utils.loadpath("simple_text.png")
-    boxes = [
-        Region(doc, 0, 544, 508, 401, 76),
-        Region(doc, 0, 544, 636, 1460, 260),
-        Region(doc, 0, 544, 910, 1460, 551),
-    ]
-    return {
-        "doc": doc,
-        "boxes": boxes,
-    }
 
 
 def test_analyzer():

@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from semdoc.reader.bitmap import BitmapDocument
+from semdoc.structure import Document
 
 
 def docpath(path: str) -> Path:
@@ -9,7 +10,7 @@ def docpath(path: str) -> Path:
     return base / file
 
 
-def loadpath(filename: str):
+def loadpath(filename: str) -> Document:
     path = docpath(filename)
     doc = BitmapDocument(path)
     return doc

@@ -1,13 +1,8 @@
 import cv2
 import copy
 
-from semdoc.structure import Region
+from semdoc.structure import Region, is_page
 from semdoc.structure.element import Element, ElementType
-
-
-def is_page(e: Element):
-    category = e.category
-    return category == ElementType.Page
 
 
 class Analyzer:
