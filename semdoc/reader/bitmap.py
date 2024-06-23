@@ -14,7 +14,7 @@ class BitmapDocument(Document):
         self, page_no: int, x: int, y: int, width: int, height: int
     ) -> Image:
         self._check_page_no(page_no)
-        box = (x, y, x + width, x + height)
+        box = (x, y, x + width, y + height)
         return self.image.crop(box)
 
     def get_region_vector(self, x: int, y: int, width: int, height: int):
