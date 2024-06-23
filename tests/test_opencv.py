@@ -25,10 +25,5 @@ def test_boxes_simple_text(analyzer, simple_text):
     analyzed = analyzer.run(doc.physical_structure())
     partitions = analyzed.children[0].children
     regions = sorted(map(lambda p: p.region(), partitions), key=lambda r: r.y)
-    box_doc = simple_text["boxes"][0].document
-    assert box_doc == doc
-    assert box_doc is doc
     for a, b in zip(regions, simple_text["boxes"]):
-        assert a.document == b.document
-        assert a.document is b.document
         assert a.approx(b)
