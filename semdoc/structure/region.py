@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+from typing import Self
 
 from . import document
 
@@ -62,6 +63,26 @@ class Region:
             abs(self.y + self.height - other.y - other.height) < y_tollerance,
         ]
         return all(similar)
+
+    def encompasses(self, other: Self) -> bool:
+        if type(other) is not type(self):
+            return False
+        if other.document is not self.document:
+            return False
+        if other.page_no != self.page_no:
+            return False
+        x_tollerance = self.document.get_geometry(self.page_no)["width"] / 1000
+        y_tollerance = self.document.get_geometry(self.page_no)["height"] / 1000
+        x, y = self.x - x_tollerance, self.y - y_tollerance
+        w, h = self.width + 2 * x_tollerance, self.height + 2 * y_tollerance
+        return all(
+            [
+                x < other.x,
+                y < other.y,
+                x + w > other.x + other.width,
+                y + h > other.y + other.height,
+            ]
+        )
 
     def get_bitmap(self) -> Image:
         return self.document.get_region_bitmap(

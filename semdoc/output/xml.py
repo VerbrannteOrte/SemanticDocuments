@@ -27,6 +27,16 @@ class XMLFormatter:
                 page_no = element.get("page_no")
                 if page_no:
                     attrib["page_no"] = str(page_no)
+            case EType.Heading1:
+                tag = "H1"
+            case EType.Heading2:
+                tag = "H2"
+            case EType.Heading3:
+                tag = "H3"
+            case EType.Heading4:
+                tag = "H4"
+            case EType.Paragraph:
+                tag = "Paragraph"
         if parent is None:
             node = ET.Element(tag, attrib)
         else:

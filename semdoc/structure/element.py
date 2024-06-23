@@ -2,6 +2,9 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Self
 from enum import StrEnum, auto
+from semdoc import logging
+
+logger = logging.getLogger("semdoc.element")
 
 
 class ElementType(StrEnum):
@@ -21,10 +24,24 @@ class ElementType(StrEnum):
     Table = auto()  # a logical table
 
 
+def is_logical(element):
+    logical_categories = [
+        ElementType.Document,
+        ElementType.Heading1,
+        ElementType.Heading2,
+        ElementType.Heading3,
+        ElementType.Heading4,
+        ElementType.Paragraph,
+        ElementType.Table,
+    ]
+    return element.category in logical_categories
+
+
 def geometric_sorter(element):
     region = element.region()
+    page = region.page_no
     x, y = region.x, region.y
-    return x + y * 5
+    return (page, x + y * 5)
 
 
 # class Element:
@@ -59,6 +76,7 @@ class Element:
         self.children = list()
         self.category = category
         self.properties = defaultdict(list)
+        self.parent = None
 
     def __repr__(self):
         return f"Element({self.category!r}, children={self.children!r}, properties={self.properties!r})"
@@ -104,6 +122,15 @@ class Element:
 
     def _add(self, element: Self):
         self.children.append(element)
+        element.parent = self
+
+    def remove(self, element: Self):
+        try:
+            self.children.remove(element)
+        except ValueError:
+            logger.warn("tried to remove element that was not a child")
+        else:
+            element.parent = None
 
     def __len__(self):
         return len(self.children)
@@ -127,6 +154,7 @@ class Element:
         children = [child.to_dict() for child in self.children]
         properties = {key: self.get_property(key) for key in self.properties.keys()}
         return {
+            "category": self.category,
             "children": children,
             "properties": properties,
         }

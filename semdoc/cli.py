@@ -5,9 +5,10 @@ import typer
 from rich import pretty
 
 from semdoc.reader import load_path
-from semdoc.analyzer import Sequential
+from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer
 from semdoc.analyzer import surya
 from semdoc.gui import show_boxes
+from semdoc.output import get_formatter
 
 
 def main(
@@ -19,6 +20,15 @@ def main(
             readable=True,
         ),
     ],
+    outfile: Annotated[
+        Path,
+        typer.Argument(
+            dir_okay=False,
+            writable=True,
+        ),
+    ],
+    print_result: Annotated[bool, typer.Option()] = False,
+    visualize_result: Annotated[bool, typer.Option()] = False,
 ):
     doc = load_path(infile)
     physical = doc.physical_structure()
@@ -31,8 +41,22 @@ def main(
     layout_recognizer = surya.Layout()
     ocr_pipeline.add(layout_recognizer)
 
-    result = ocr_pipeline.run(physical)
-    show_boxes(doc, result)
+    logical_pipeline = Sequential()
+    organizer = TreeOrganizer()
+    logical_pipeline.add(organizer)
+    logicalizer = Logicalizer()
+    logical_pipeline.add(logicalizer)
+
+    ocr_result = ocr_pipeline.run(physical)
+    if visualize_result:
+        show_boxes(doc, ocr_result)
+
+    logical_result = logical_pipeline.run(ocr_result)
+    writer = get_formatter("xml")(logical_result)
+    writer.write_file(outfile)
+
+    if print_result:
+        pretty.pprint(logical_result.to_dict())
 
 
 def run():
