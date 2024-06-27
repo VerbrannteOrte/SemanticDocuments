@@ -3,12 +3,14 @@ from PySide6.QtWidgets import QApplication, QLabel
 from PIL.ImageQt import ImageQt
 from rich import pretty
 import sys
+import seaborn
 import io
 
 
 class ImageWidget(QtWidgets.QWidget):
     def __init__(self, image, structure, *args, **kwargs):
         QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        self.colormap = seaborn.color_palette()
         self.image = image
         self.qtimage = QtGui.QPixmap.fromImage(ImageQt(image))
         self.structure = structure
@@ -30,20 +32,25 @@ class ImageWidget(QtWidgets.QWidget):
             h = w / image_ratio
             scaling = h / self.image.size[1]
         painter.drawPixmap(x, y, w, h, self.qtimage)
-        pen = QtGui.QPen()
-        pen.setColor(QtGui.QColor(255, 0, 0))
-        pen.setWidth(1)
-        painter.setPen(pen)
         painter.setBrush(QtGui.QBrush(QtCore.Qt.NoBrush))
         x_offset, y_offset = x, y
-        for element in self.structure.children[0].iter_children():
-            region = element.region()
-            if region:
-                x = x_offset + region.x * scaling
-                y = y_offset + region.y * scaling
-                w = region.width * scaling
-                h = region.height * scaling
-                painter.drawRect(x, y, w, h)
+        self.draw_boxes(painter, self.structure, 0, x_offset, y_offset, scaling)
+
+    def draw_boxes(self, painter, structure, level, x_offset, y_offset, scaling):
+        for element in structure.children:
+            self.draw_boxes(painter, element, level + 1, x_offset, y_offset, scaling)
+        region = structure.region()
+        if region:
+            pen = QtGui.QPen()
+            color = [round(c * 255) for c in self.colormap[level]]
+            pen.setColor(QtGui.QColor(*color))
+            pen.setWidth(1)
+            painter.setPen(pen)
+            x = x_offset + region.x * scaling
+            y = y_offset + region.y * scaling
+            w = region.width * scaling
+            h = region.height * scaling
+            painter.drawRect(x, y, w, h)
 
 
 def show_boxes(doc, structure):

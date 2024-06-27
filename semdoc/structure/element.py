@@ -145,7 +145,7 @@ class Element:
             return ""
 
     def region(self):
-        return self.get_property("region")
+        return self.get("region")
 
     def children_ordered(self):
         yield from sorted(self.children, key=lambda c: c.y and c.y)

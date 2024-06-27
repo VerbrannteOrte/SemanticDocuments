@@ -49,7 +49,8 @@ def main(
 
     ocr_result = ocr_pipeline.run(physical)
     if visualize_result:
-        show_boxes(doc, ocr_result)
+        tree_structure = organizer.run(ocr_result)
+        show_boxes(doc, tree_structure)
 
     logical_result = logical_pipeline.run(ocr_result)
     writer = get_formatter("xml")(logical_result)
