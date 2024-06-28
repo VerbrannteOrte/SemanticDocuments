@@ -1,4 +1,5 @@
 from copy import deepcopy
+import math
 
 from semdoc.structure import ElementType as ET
 
@@ -15,5 +16,7 @@ class OCR:
             region = element.region()
             image = region.get_bitmap()
             text, confidence = inference.text_recognition(image, ["de"])
+            if math.isnan(confidence):
+                confidence = 0
             element.set_text(text, self.name, confidence)
         return out
