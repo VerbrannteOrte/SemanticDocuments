@@ -9,5 +9,5 @@ def test_bitmap_document():
     assert len(pages) == 1
     region = pages[0].region()
     assert region.is_simple()
-    assert region.width == 2550
-    assert region.height == 3300
+    assert region.width == 2481
+    assert region.height == 3508

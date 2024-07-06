@@ -1,5 +1,6 @@
 ---
 pagestyle: empty
+papersize: a4
 ---
 # Hello, world!
 

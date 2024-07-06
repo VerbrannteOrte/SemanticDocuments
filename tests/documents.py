@@ -9,9 +9,9 @@ import utils
 def simple_text():
     doc = utils.loadpath("simple_text.png")
     boxes = [
-        Region(doc, 0, 544, 508, 401, 76),
-        Region(doc, 0, 544, 636, 1460, 260),
-        Region(doc, 0, 544, 910, 1460, 551),
+        Region(doc, 0, 506, 519, 404, 76),
+        Region(doc, 0, 508, 641, 1456, 260),
+        Region(doc, 0, 508, 921, 1456, 540),
     ]
     text_lines = [
         "Hello, world!",

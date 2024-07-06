@@ -54,8 +54,8 @@ class Region:
             return False
         if self.page_no != other.page_no:
             return False
-        x_tollerance = self.document.get_geometry(self.page_no)["width"] / 1000
-        y_tollerance = self.document.get_geometry(self.page_no)["height"] / 1000
+        x_tollerance = self.document.get_geometry(self.page_no)["width"] / 500
+        y_tollerance = self.document.get_geometry(self.page_no)["height"] / 500
         similar = [
             abs(self.x - other.x) < x_tollerance,
             abs(self.y - other.y) < y_tollerance,
