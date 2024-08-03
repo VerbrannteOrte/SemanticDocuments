@@ -48,6 +48,7 @@
               poppler_utils
               imagemagick
               ghostscript
+              python312Packages.snakeviz
               qt6.full
               xorg.xcbutil
               xorg.libxcb
