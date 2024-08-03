@@ -1,8 +1,9 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    poetry2nix.url = "github:nix-community/poetry2nix";
   };
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, poetry2nix }:
     let
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -18,15 +19,18 @@
         })
       );
       pythonTk= forAllSystems (system:
-        (pkgs.${system}.python3.override {
+        (pkgs.${system}.python312.override {
           x11Support = true;
           tk = true;
           stripTkinter = false;
         }));
-    in
+    in rec
     {
       packages = forAllSystems (system:
-        { default = pkgs.${system}.hello; });
+        { default = pkgs.${system}.hello;
+          pdfbox = pkgs.${system}.callPackage nix/pdfbox.nix {};
+          verapdf = pkgs.${system}.callPackage nix/verapdf.nix {};
+        });
       devShells = forAllSystems (system:
         { default = pkgs.${system}.mkShellNoCC {
             packages = with pkgs.${system}; [
@@ -61,8 +65,12 @@
               xcb-util-cursor
               libxkbcommon
               fontconfig
+              ocrmypdf
               tesseract
               tex.${system}
+            ] ++
+            [ packages.${system}.verapdf
+              packages.${system}.pdfbox
             ];
             shellHook = let
               p = pkgs.${system};

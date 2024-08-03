@@ -1,7 +1,7 @@
 from surya.recognition import batch_recognition
 from surya.layout import batch_layout_detection
 from surya.detection import batch_text_detection
-from surya.model.detection.segformer import (
+from surya.model.detection.model import (
     load_model as load_detection_model,
     load_processor as load_detection_processor,
 )

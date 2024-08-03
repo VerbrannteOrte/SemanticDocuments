@@ -12,25 +12,32 @@ from semdoc.output import get_formatter
 
 
 def main(
-    infile: Annotated[
+    input: Annotated[
         Path,
         typer.Argument(
             exists=True,
             dir_okay=False,
             readable=True,
+            help="Input document",
         ),
     ],
-    outfile: Annotated[
+    output: Annotated[
         Path,
         typer.Argument(
             dir_okay=False,
             writable=True,
+            help="Output document",
         ),
     ],
-    print_result: Annotated[bool, typer.Option()] = False,
-    visualize_result: Annotated[bool, typer.Option()] = False,
+    print_result: Annotated[
+        bool,
+        typer.Option(help="Pretty print the semantic tree of the document"),
+    ] = False,
+    visualize_result: Annotated[
+        bool, typer.Option(help="Show the document annotated with detected boxes")
+    ] = False,
 ):
-    doc = load_path(infile)
+    doc = load_path(input)
     physical = doc.physical_structure()
 
     ocr_pipeline = Sequential()
@@ -53,8 +60,9 @@ def main(
         show_boxes(doc, tree_structure)
 
     logical_result = logical_pipeline.run(ocr_result)
-    writer = get_formatter("xml")(logical_result)
-    writer.write_file(outfile)
+    format = output.suffix[1:]
+    writer = get_formatter(format)(logical_result)
+    writer.write_file(output)
 
     if print_result:
         pretty.pprint(logical_result.to_dict())
