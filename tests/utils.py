@@ -40,7 +40,7 @@ def dummy_image() -> Image:
 
     draw.rectangle([(50, 50), (100, 100)], fill="yellow", outline="black")
 
-    draw.text((150, 75), "Hello World!", fill="white", font=libsans)
+    draw.text((50, 125), "Hello World!", fill="white", font=libsans, font_size=48)
 
     return image_with_background
 
@@ -57,9 +57,12 @@ def _rule_to_dict(rule):
 
 
 def validate_verapdf(file: Path, flavour="ua2"):
-    verapdf_stdout = subprocess.run(
+    verapdf_proc = subprocess.run(
         ["verapdf", "--flavour", flavour, file], capture_output=True, text=True
     )
-    result = ET.fromstring(verapdf_stdout.stdout)
+    if len(verapdf_proc.stderr) > 0:
+        print(verapdf_proc.stderr)
+        raise RuntimeError("verapdf produced output on stderr")
+    result = ET.fromstring(verapdf_proc.stdout)
     failed_rules = result.findall("./jobs/job/validationReport/details/rule")
     return [_rule_to_dict(rule) for rule in failed_rules]

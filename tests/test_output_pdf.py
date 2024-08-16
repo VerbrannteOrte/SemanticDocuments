@@ -4,6 +4,7 @@ import llpdf
 import io
 import tempfile
 from rich import pretty
+from pytest import approx
 
 from semdoc.output import get_formatter
 from semdoc.output.pdf import PDFDocument
@@ -55,15 +56,48 @@ def test_document_empty(tmp_path):
 
     validation_results = validate_verapdf(file, flavour="ua1")
     pretty.pprint(validation_results)
-    print(file)
     assert len(validation_results) == 0
+
+
+def test_document_text(tmp_path):
+    pdf = PDFDocument(title="Hello world")
+    page = pdf.new_page()
+    font = pdf.create_font(name="Helvetica", type="Type1")
+    pos = (40, 10)
+    size = 24
+    pdf.start_tag("H1")
+    page.write_text(pos, font, size, "Hello, world")
+    pdf.end_tag()
+    pdf.start_tag("P")
+    size = 14.0
+    pos = (10, 50)
+    page.write_text(pos, font, size, "How are you doing.")
+    pos = (10, 55)
+    page.write_text(pos, font, size, "Just checking in.")
+    page.write_text((180, 270), font, 12, "Page 1", artifact=True)
+    pdf.end_tag()
+
+    file = tmp_path / "out.pdf"
+    pdf.write_file(file)
+    mupdf = _mupdf_open(file)
+    assert mupdf.page_count == 1
+
+    validation_results = validate_verapdf(file, flavour="ua1")
+    pretty.pprint(validation_results)
+    assert len(validation_results) == 1
+    failed_rule = validation_results[0]
+    assert failed_rule["specification"] == "ISO 14289-1:2014"
+    assert failed_rule["clause"] == "7.21.4.1"
 
 
 def test_document_bitmap(dummy_image, tmp_path):
     pdf = PDFDocument()
     page = pdf.new_page()
     img_obj = pdf.add_bitmap(dummy_image)
-    img_obj.draw(page, 100, 100, 400, 300, None, 1)
+    page.draw_image((0, 0), img_obj, artifact=True)
+    half_x = 210 / 2
+    half_y = 297 / 2
+    page.draw_image((half_x, half_y), img_obj, artifact=True)
     file = tmp_path / "out.pdf"
     pdf.write_file(file)
 
@@ -71,10 +105,18 @@ def test_document_bitmap(dummy_image, tmp_path):
     assert mupdf.page_count == 1
     mupdf_page = mupdf[0]
     images = mupdf_page.get_images()
-    rects = 0
+    rects = []
     for image in images:
-        rects += len(mupdf_page.get_image_rects(image))
-    assert rects == 1
+        rects.extend(mupdf_page.get_image_rects(image))
+    assert len(rects) == 2
+    dummy_width_units = dummy_image.width / 300 * 72
+    dummy_height_units = dummy_image.height / 300 * 72
+    assert rects[0].width == dummy_width_units
+    assert rects[0].height == dummy_height_units
+    assert rects[0].x0 == approx(0)
+    assert rects[0].y0 == approx(0)
+    assert rects[1].x0 == approx(half_x / 25.4 * 72)
+    assert rects[1].y0 == approx(half_y / 25.4 * 72)
 
 
 def test_simple_text(simple_text):
