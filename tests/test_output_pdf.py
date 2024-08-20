@@ -73,7 +73,9 @@ def test_document_text(tmp_path):
     pos = (10, 50)
     page.write_text(pos, font, size, "How are you doing.")
     pos = (10, 55)
-    page.write_text(pos, font, size, "Just checking in.")
+    page.write_text(
+        pos, font, size, "Just checking in with some unicode characters äöüß"
+    )
     page.write_text((180, 270), font, 12, "Page 1", artifact=True)
     pdf.end_tag()
 

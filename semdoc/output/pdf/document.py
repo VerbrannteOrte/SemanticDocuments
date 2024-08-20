@@ -350,7 +350,7 @@ class PDFObject:
         return self.obj.set_content(content)
 
     def append_stream(self, text):
-        new_data = text.encode("utf-8")
+        new_data = text.encode("cp1252")
         if self.obj.stream is not None:
             prev_data = self.obj.stream.decode()
             new_data = prev_data + b"\n" + new_data
@@ -367,6 +367,7 @@ class PDFFont(PDFObject):
                 PDFName("/Type"): PDFName("/Font"),
                 PDFName("/Subtype"): PDFName(f"/{type}"),
                 PDFName("/BaseFont"): PDFName(f"/{name}"),
+                PDFName("/Encoding"): PDFName("/WinAnsiEncoding"),
             }
         )
 
