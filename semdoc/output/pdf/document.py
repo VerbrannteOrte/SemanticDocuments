@@ -312,17 +312,28 @@ class PDFPage:
         return width
 
     def write_text(
-        self, pos: tuple, font, size: float, text: str, artifact: bool = False
+        self,
+        pos: tuple,
+        font,
+        size: float,
+        text: str,
+        artifact: bool = False,
+        visible: bool = True,
     ):
         tag_line = self._get_tag_line(artifact)
         font_name = self.ensure_font(font)
         x, y = map(_mm_to_dots, pos)
         y = self.height - y - size
+        if visible:
+            rendering_mode = 0
+        else:
+            rendering_mode = 3
         instructions = f"""
         {tag_line}
         q
         BT
-        1 0 0 1 {x:.4f} {y:.4f} Tm
+        1 0 0 1 {x:f} {y:f} Tm
+        {rendering_mode} Tr
         {font_name} {size} Tf
           [({text})] TJ
         ET

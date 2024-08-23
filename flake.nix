@@ -30,7 +30,26 @@
         { default = pkgs.${system}.hello;
           pdfbox = pkgs.${system}.callPackage nix/pdfbox.nix {};
           verapdf = pkgs.${system}.callPackage nix/verapdf.nix {};
+          pdfuaanalyze = pkgs.${system}.callPackage nix/pdfuaanalyze.nix {};
+          taggedpdf = pkgs.${system}.callPackage nix/taggedpdf.nix {};
         });
+      apps = forAllSystems (system:
+        let
+          packages = self.outputs.packages.${system};
+        in {
+          pdfuaanalyze = {
+            type = "app";
+            program = "${packages.pdfuaanalyze}/bin/pdfuaanalyze";
+          };
+          pdfstruct = {
+            type = "app";
+            program = "${packages.taggedpdf}/bin/pdfstruct";
+          };
+          annotate = {
+            type = "app";
+            program = "${packages.taggedpdf}/bin/annotate";
+          };
+      });
       devShells = forAllSystems (system:
         { default = pkgs.${system}.mkShellNoCC {
             packages = with pkgs.${system}; [
@@ -72,6 +91,8 @@
             ] ++
             [ packages.${system}.verapdf
               packages.${system}.pdfbox
+              packages.${system}.taggedpdf
+              packages.${system}.pdfuaanalyze
             ];
             shellHook = let
               p = pkgs.${system};

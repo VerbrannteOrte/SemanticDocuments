@@ -10,7 +10,7 @@ from semdoc.output import get_formatter
 from semdoc.output.pdf import PDFDocument
 
 from documents import simple_text
-from utils import dummy_image, validate_verapdf
+from utils import dummy_image, validate_verapdf, get_tag_structure
 
 
 def _mupdf_open(path: Path) -> pymupdf.Document:
@@ -121,7 +121,22 @@ def test_document_bitmap(dummy_image, tmp_path):
     assert rects[1].y0 == approx(half_y / 25.4 * 72)
 
 
-def test_simple_text(simple_text):
+def test_simple_text(simple_text, tmp_path):
     doc = simple_text["logical"]
     exporter = get_formatter("pdf")(doc)
-    exporter.write_file("text.pdf")
+    outfile = tmp_path / "out.pdf"
+    exporter.write_file(outfile)
+
+    validation_results = validate_verapdf(outfile, flavour="ua1")
+    pretty.pprint(validation_results)
+    assert len(validation_results) == 0
+
+    structure = get_tag_structure(outfile)
+    headings = structure.findall("./Document/H1/MCID")
+    assert len(headings) == 1
+    assert headings[0].text == "Hello, world!"
+    paragraphs = structure.findall("./Document/P")
+    assert len(paragraphs) == 2
+    mcids = structure.findall(".//MCID")
+    text_lines = list(map(lambda elem: elem.text, mcids))
+    assert text_lines == simple_text["text_lines"]

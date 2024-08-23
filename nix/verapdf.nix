@@ -21,7 +21,7 @@ in
       sha256 = "sha256-SzT1ODH0KF6X7HjYl1xuIUHOoh+/roLhBVidaS7SdMQ=";
     };
 
-    mvnHash = "sha256-lsqNQBMyQDlucD3HJPM90UrXxAKEROucqKW0T3e0lhA=";
+    mvnHash = "sha256-/IxYq0FNRyvPQcc2NzxJrnRBhYluH7SeqEDuh67U3mg=";
     nativeBuildInputs = [ maven makeWrapper ];
 
     # preBuild = ''

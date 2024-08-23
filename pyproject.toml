@@ -33,7 +33,7 @@ pdfrw = "^0.4"
 llpdf = { path = "../llpdf", develop = true }
 img2pdf = "^0.5.1"
 python-levenshtein = "^0.25.1"
-python-lsp-server = "^1.11.0"
+python-lsp-server = {extras = ["rope"], version = "^1.11.0"}
 lxml = "^5.2.2"
 
 [tool.poetry.scripts]

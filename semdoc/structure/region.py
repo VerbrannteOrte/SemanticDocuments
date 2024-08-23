@@ -14,6 +14,7 @@ class Region:
         y: int,
         w: int,
         h: int,
+        primary: bool = True,
     ):
         self.document = document
         self.page_no = page_no
@@ -21,6 +22,7 @@ class Region:
         self.y = y
         self.width = w
         self.height = h
+        self.primary = primary
 
     def is_simple(self):
         return True
