@@ -13,7 +13,7 @@ def test_get_bitmap_numpy():
     assert channels == 3
 
 
-class MyDocument:
+class StubDocument:
     def get_geometry(self, page_no):
         return {
             "width": 2550,
@@ -22,7 +22,7 @@ class MyDocument:
 
 
 def test_approx():
-    doc = MyDocument()
+    doc = StubDocument()
     a = Region(doc, 0, 100, 100, 200, 200)
     b = Region(doc, 0, 100, 100, 200, 200)
     assert a.approx(b)

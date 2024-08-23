@@ -25,11 +25,13 @@ def test_ocr_simple(simple_text):
     output = pipeline.run(doc.physical_structure())
     lines = output.children[0].children
     texts = [line.get_text() for line in lines]
+    score_cutoff = 3
     distances = [
-        Levenshtein.distance(predicted, real, score_cutoff=3)
+        Levenshtein.distance(predicted, real, score_cutoff=score_cutoff)
         for (predicted, real) in zip(texts, simple_text["text_lines"])
     ]
-    assert all([distance < 4 for distance in distances])
+    # Levenshtein.distance returns score_cutoff + 1 for distances larger than score_cutoff
+    assert all([distance < score_cutoff + 1 for distance in distances])
 
 
 def test_layout_simple(simple_text):

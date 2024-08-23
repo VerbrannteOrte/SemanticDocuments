@@ -1,7 +1,7 @@
 from typing import Iterable, Optional
 import utils
 from pathlib import Path
-from semdoc import output
+from semdoc.writer import get_writer
 import xml.etree.ElementTree as ET
 from semdoc.structure import Element, ElementType, Document
 
@@ -33,7 +33,7 @@ def test_system(tmp_path):
     logical_structure = logicalizer(physical_structure)
 
     dest = tmp_path / Path("simple_text.xml")
-    xml_output = output.get_formatter("xml")(logical_structure)
+    xml_output = get_writer("xml")(logical_structure)
     xml_output.write_file(dest)
     xml_string = xml_output.tostring()
 

@@ -6,8 +6,8 @@ import tempfile
 from rich import pretty
 from pytest import approx
 
-from semdoc.output import get_formatter
-from semdoc.output.pdf import PDFDocument
+from semdoc.writer import get_writer
+from semdoc.writer.pdf import PDFDocument
 
 from documents import simple_text
 from utils import dummy_image, validate_verapdf, get_tag_structure
@@ -123,7 +123,7 @@ def test_document_bitmap(dummy_image, tmp_path):
 
 def test_simple_text(simple_text, tmp_path):
     doc = simple_text["logical"]
-    exporter = get_formatter("pdf")(doc)
+    exporter = get_writer("pdf")(doc)
     outfile = tmp_path / "out.pdf"
     exporter.write_file(outfile)
 

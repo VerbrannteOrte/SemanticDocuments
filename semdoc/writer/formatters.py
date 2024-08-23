@@ -2,7 +2,7 @@ from .xml import XMLFormatter
 from .pdf import PdfExporter
 
 
-def get_formatter(format):
+def get_writer(format):
     if format == "xml":
         return XMLFormatter
     elif format == "pdf":

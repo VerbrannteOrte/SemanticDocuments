@@ -6,12 +6,12 @@ from semdoc import reader
 from semdoc import analyzer
 from semdoc.analyzer import opencv
 from semdoc.analyzer import tesseract
-from semdoc import output
+from semdoc.writer import get_writer
 
 import utils
 
 
-def test_multi_object(tmp_path):
+def test_bitmap_xml(tmp_path):
     src = utils.docpath("simple_text.png")
     doc = reader.load_path(src)
     physical = doc.physical_structure()
@@ -24,7 +24,7 @@ def test_multi_object(tmp_path):
     result = pipeline.run(physical)
 
     dest = tmp_path / Path("simple_text.xml")
-    xml_output = output.get_formatter("xml")(result)
+    xml_output = get_writer("xml")(result)
     string = xml_output.tostring()
     xml_output.write_file(dest)
 

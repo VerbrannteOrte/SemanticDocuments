@@ -11,15 +11,6 @@ def analyzer():
     return Analyzer()
 
 
-def test_analyzer():
-    doc = utils.loadpath("simple_text.png")
-    analyzer = Analyzer()
-    structure = analyzer.run(doc.physical_structure())
-    dict = structure.to_dict()
-    boxes = structure.children[0].children
-    assert len(boxes) == 3
-
-
 def test_boxes_simple_text(analyzer, simple_text):
     doc = simple_text["doc"]
     analyzed = analyzer.run(doc.physical_structure())
