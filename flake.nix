@@ -11,7 +11,9 @@
     in
     {
       packages = forAllSystems (system:
-        { default = pkgs.${system}.hello;
+        { default = pkgs.${system}.callPackage nix/semdoc.nix {
+            inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication defaultPoetryOverrides;
+          };
           pdfbox = pkgs.${system}.callPackage nix/pdfbox.nix {};
           verapdf = pkgs.${system}.callPackage nix/verapdf.nix {};
           pdfuaanalyze = pkgs.${system}.callPackage nix/pdfuaanalyze.nix {};

@@ -12,16 +12,16 @@ let
 in
   maven.buildMavenPackage rec {
     pname = "verapdf";
-    version = "1.27.39"; # Change to latest version if needed
+    version = "1.27.54"; # Change to latest version if needed
 
     src = fetchFromGitHub {
       owner = "veraPDF";
       repo = "veraPDF-apps";
       rev = "v${version}";
-      sha256 = "sha256-SzT1ODH0KF6X7HjYl1xuIUHOoh+/roLhBVidaS7SdMQ=";
+      sha256 = "sha256-Y90r7425r9lLM5NVeVhZVniJj3RXnwPtKDKhNWCJvH8=";
     };
 
-    mvnHash = "sha256-/IxYq0FNRyvPQcc2NzxJrnRBhYluH7SeqEDuh67U3mg=";
+    mvnHash = "sha256-omvk3In/iq9emrDDmC/UReM/LfEr2Di0aN8rylWP1Rk=";
     nativeBuildInputs = [ maven makeWrapper ];
 
     # preBuild = ''

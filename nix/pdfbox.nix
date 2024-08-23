@@ -2,16 +2,16 @@
 
 maven.buildMavenPackage rec {
   pname = "pdfbox";
-  version = "3.0.2";
+  version = "3.0.3";
 
   src = fetchFromGitHub {
     rev = "${version}";
     owner = "apache";
     repo = "pdfbox";
-    sha256 = "sha256-IJKu4a8+Q7vc8aqn1UavcmNJIb2nnZIqTJUvOLa8W/0=";
+    sha256 = "sha256-fXmyVYJIghXpB1BfYw3qAF1f42d8Y9jX1jx//r+jC7k=";
   };
 
-  mvnHash = "sha256-/xD4w6UXgd6uSadJfY3Rmz73/kp0a/g9GfEJlJTgfuM";
+  mvnHash = "sha256-w0p7zGojm76uxJqoZX6FUb7PwG492gF4UnI/Hn9ijqE=";
   mvnParameters = "-Dmaven.test.skip=true";
   nativeBuildInputs = [ maven makeWrapper pkgs.unzip ];
   doChecks = false;
