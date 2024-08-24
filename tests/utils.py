@@ -1,7 +1,10 @@
+import pymupdf
 import subprocess
 import xml.etree.ElementTree as ET
 import subprocess
 import pytest
+import Levenshtein
+from collections.abc import Sequence
 from copy import copy
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
@@ -83,3 +86,34 @@ def validate_verapdf(file: Path, flavour="ua2"):
 def get_tag_structure(file: Path):
     output = subprocess_get_xml("pdfstruct", file, ["--format", "xml"])
     return output
+
+
+def mupdf_open(path: Path) -> pymupdf.Document:
+    """Load the file and return a mupdf document. Assert that no warings are
+    emmited by mupdf. This is a indication whether the document is well formed."""
+    pymupdf.TOOLS.mupdf_warnings(reset=True)
+    document = pymupdf.open(path)
+    warnings = pymupdf.TOOLS.mupdf_warnings()
+    assert warnings == ""
+    return document
+
+
+def assert_similar(left, right, avg_distance=0.5):
+    """Assert that the Levenshtein distance between left and right is less than
+    avg_distance * len(left). Accepts either two strings or two sequences of
+    strings."""
+    if isinstance(left, str):
+        left = [left]
+    else:
+        left = list(left)
+    if isinstance(right, str):
+        right = [right]
+    else:
+        right = list(right)
+    assert len(left) == len(right)
+    max_distance = max(1, avg_distance * len(left))
+    distances = [
+        Levenshtein.distance(l, r, score_cutoff=max_distance)
+        for (l, r) in zip(left, right, strict=True)
+    ]
+    assert sum(distances) <= max_distance

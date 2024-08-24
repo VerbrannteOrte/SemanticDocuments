@@ -1,3 +1,3 @@
-from .formatters import get_writer
+from .writers import get_writer
 
-__all__ = ["get_formatter"]
+__all__ = ["get_writer"]

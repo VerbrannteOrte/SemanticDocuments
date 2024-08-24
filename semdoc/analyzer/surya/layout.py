@@ -1,8 +1,11 @@
 from copy import deepcopy
 
 from semdoc.structure import Element, ElementType as ET
+from semdoc import logging
 
 from . import inference
+
+logger = logging.getLogger("semdoc.analyzer.surya")
 
 
 class Layout:
@@ -24,6 +27,8 @@ class Layout:
                 }
                 area = Element(category[box.label])
                 area_region = region.create_partition(x1, y1, w, h)
+                area_region.primary = False
                 area.set_property("region", area_region, self.name, box.confidence)
                 element.add(area)
+                logger.debug("Detected new element: %s", area)
         return out

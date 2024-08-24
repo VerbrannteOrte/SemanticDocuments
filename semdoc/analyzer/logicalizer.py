@@ -12,7 +12,7 @@ class Logicalizer:
     def collect_text(self, elements):
         texts = []
         for element in elements:
-            if is_logical(element):
+            if element.category.is_block:
                 continue
             texts.append(element.get_text())
             child_texts = self.collect_text(
@@ -24,13 +24,13 @@ class Logicalizer:
         return " ".join(texts)
 
     def logicalize(self, element):
-        if is_logical(element):
+        if element.category.is_block:
             own_text = element.get_text()
             child_texts = self.collect_text(
                 sorted(element.children, key=geometric_sorter)
             )
             text = " ".join((t for t in (own_text, child_texts) if t != ""))
-            element.set_text(text, self.name, 1)
+            element.set_property("content_text", text, self.name, 1)
         future_children = []
         for child in sorted(element.children, key=geometric_sorter):
             element.remove(child)

@@ -23,6 +23,16 @@ class ElementType(StrEnum):
     TextLine = auto()  # a physical area containing a continuous line of text
     Table = auto()  # a logical table
 
+    @property
+    def is_block(self):
+        return str(self) in [
+            "heading1",
+            "heading2",
+            "heading3",
+            "heading4",
+            "paragraph",
+        ]
+
 
 def is_logical(element):
     logical_categories = [
@@ -33,6 +43,7 @@ def is_logical(element):
         ElementType.Heading4,
         ElementType.Paragraph,
         ElementType.Table,
+        ElementType.TextLine,
     ]
     return element.category in logical_categories
 

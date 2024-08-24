@@ -1,7 +1,4 @@
-from pathlib import Path
-import pymupdf
 import llpdf
-import io
 import tempfile
 from rich import pretty
 from pytest import approx
@@ -10,15 +7,7 @@ from semdoc.writer import get_writer
 from semdoc.writer.pdf import PDFDocument
 
 from documents import simple_text
-from utils import dummy_image, validate_verapdf, get_tag_structure
-
-
-def _mupdf_open(path: Path) -> pymupdf.Document:
-    pymupdf.TOOLS.mupdf_warnings(reset=True)
-    document = pymupdf.open(path)
-    warnings = pymupdf.TOOLS.mupdf_warnings()
-    assert warnings == ""
-    return document
+from utils import dummy_image, validate_verapdf, get_tag_structure, mupdf_open
 
 
 def test_llpdf(dummy_image, tmp_path):
@@ -43,7 +32,7 @@ def test_llpdf(dummy_image, tmp_path):
     )
 
     # this checks for valid structure:
-    _ = _mupdf_open(outfile)
+    _ = mupdf_open(outfile)
 
 
 def test_document_empty(tmp_path):
@@ -51,7 +40,7 @@ def test_document_empty(tmp_path):
     _ = pdf.new_page()
     file = tmp_path / "out.pdf"
     pdf.write_file(file)
-    mupdf = _mupdf_open(file)
+    mupdf = mupdf_open(file)
     assert mupdf.page_count == 1
 
     validation_results = validate_verapdf(file, flavour="ua1")
@@ -81,7 +70,7 @@ def test_document_text(tmp_path):
 
     file = tmp_path / "out.pdf"
     pdf.write_file(file)
-    mupdf = _mupdf_open(file)
+    mupdf = mupdf_open(file)
     assert mupdf.page_count == 1
 
     validation_results = validate_verapdf(file, flavour="ua1")
@@ -103,7 +92,7 @@ def test_document_bitmap(dummy_image, tmp_path):
     file = tmp_path / "out.pdf"
     pdf.write_file(file)
 
-    mupdf = _mupdf_open(file)
+    mupdf = mupdf_open(file)
     assert mupdf.page_count == 1
     mupdf_page = mupdf[0]
     images = mupdf_page.get_images()

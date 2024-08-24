@@ -8,6 +8,8 @@ import utils
 
 @pytest.fixture
 def simple_text():
+    path_png = utils.docpath("simple_text.png")
+    path_pdf = utils.docpath("simple_text.pdf")
     doc = utils.loadpath("simple_text.png")
     boxes = [
         Region(doc, 0, 506, 519, 404, 76),
@@ -69,6 +71,8 @@ def simple_text():
     logical.add(par2)
 
     return {
+        "path_png": path_png,
+        "path_pdf": path_pdf,
         "doc": doc,
         "boxes": boxes,
         "text_lines": text_lines,

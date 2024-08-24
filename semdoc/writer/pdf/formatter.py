@@ -4,6 +4,9 @@ from rich import pretty
 from semdoc.structure import ElementType as ET
 from .document import PDFDocument
 from semdoc.structure import Document, Region, ElementType as EType
+from semdoc import logging
+
+logger = logging.getLogger("semdoc.writer.pdf")
 
 cat2tag = {
     ET.Heading1: "H1",
@@ -27,12 +30,16 @@ class PdfExporter:
         self.print_element(document)
 
     def print_element(self, element):
+        logger.debug("Adding element %s to the pdf document", element)
         tag = cat2tag[element.category]
         if tag not in ["artifact", ""]:
             self.pdf.start_tag(tag)
 
         region = element.region()
         if region and region.primary:
+            logger.debug(
+                "Element's region is primary. Printing its content on the page."
+            )
             assert region.page_no < len(self.pages)
             page = self.pages[region.page_no]
             pos = (_to_mm(region.x), _to_mm(region.y))
@@ -40,6 +47,7 @@ class PdfExporter:
             text = element.get_text()
             size = 12
             if len(text) > 0:
+                logger.debug("Element has text. Writing it to the page.")
                 page.write_text(pos, self.font, size, text, visible=False)
 
             bitmap = region.get_bitmap()

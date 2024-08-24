@@ -43,7 +43,13 @@ class Region:
     def __deepcopy__(self, memo):
         """Do not copy the document"""
         return Region(
-            self.document, self.page_no, self.x, self.y, self.width, self.height
+            self.document,
+            self.page_no,
+            self.x,
+            self.y,
+            self.width,
+            self.height,
+            self.primary,
         )
 
     def _box_coord(self):
@@ -118,7 +124,7 @@ class Region:
         return Region(self.document, self.page_no, new_x, new_y, w, h)
 
     def __repr__(self):
-        return f"Region({self.document!r}, {self.page_no}, {self.x}, {self.y}, {self.width}, {self.height})"
+        return f"Region({self.document!r}, {self.page_no}, {self.x}, {self.y}, {self.width}, {self.height}, {self.primary})"
 
     def to_dict(self):
         dict = super().to_dict()

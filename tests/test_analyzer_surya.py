@@ -1,9 +1,9 @@
-import Levenshtein
-
 from semdoc.analyzer.surya import TextLines, OCR, Layout
-from documents import simple_text
 from semdoc import analyzer
 from semdoc.structure import ElementType as ET
+
+from utils import assert_similar
+from documents import simple_text
 
 
 def test_textlines_simple(simple_text):
@@ -25,13 +25,7 @@ def test_ocr_simple(simple_text):
     output = pipeline.run(doc.physical_structure())
     lines = output.children[0].children
     texts = [line.get_text() for line in lines]
-    score_cutoff = 3
-    distances = [
-        Levenshtein.distance(predicted, real, score_cutoff=score_cutoff)
-        for (predicted, real) in zip(texts, simple_text["text_lines"])
-    ]
-    # Levenshtein.distance returns score_cutoff + 1 for distances larger than score_cutoff
-    assert all([distance < score_cutoff + 1 for distance in distances])
+    assert_similar(texts, simple_text["text_lines"])
 
 
 def test_layout_simple(simple_text):

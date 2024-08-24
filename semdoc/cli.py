@@ -8,7 +8,7 @@ from semdoc.reader import load_path
 from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer
 from semdoc.analyzer import surya
 from semdoc.gui import show_boxes
-from semdoc.output import get_formatter
+from semdoc.writer import get_writer
 
 
 def main(
@@ -61,7 +61,7 @@ def main(
 
     logical_result = logical_pipeline.run(ocr_result)
     format = output.suffix[1:]
-    writer = get_formatter(format)(logical_result)
+    writer = get_writer(format)(logical_result)
     writer.write_file(output)
 
     if print_result:
