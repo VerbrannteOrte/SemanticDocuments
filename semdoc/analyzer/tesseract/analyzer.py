@@ -1,12 +1,14 @@
 from copy import deepcopy
-
 import pytesseract
+
+from semdoc.cache import cache_for
 
 
 class Analyzer:
     def __init__(self):
         pass
 
+    @cache_for("bitmap")
     def get_text(self, bitmap):
         lang = "deu"
         config = "--psm 3"
