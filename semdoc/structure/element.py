@@ -77,6 +77,8 @@ def is_logical(element):
 
 def geometric_sorter(element):
     region = element.region()
+    if not region:
+        return (0, 0)
     page = region.page_no
     x, y = region.x, region.y
     return (page, x + y * 5)
@@ -146,9 +148,11 @@ class Element:
         return value
 
     def get_property(self, key: str):
-        """TODO: This should go into the Property object"""
+        """TODO This should go into the Property object"""
+        if key not in self.properties:
+            raise KeyError()
         data = self.properties[key]
-        max_conf = 0
+        max_conf = -1
         strongest = None
         for prop in data:
             if prop.confidence > max_conf:
@@ -190,7 +194,8 @@ class Element:
             return ""
 
     def region(self) -> Region:
-        return self.get("region")
+        if "region" in self.properties:
+            return self.get("region")
 
     def children_ordered(self):
         yield from sorted(self.children, key=lambda c: c.y and c.y)
