@@ -1,4 +1,4 @@
-from .heading_levels import HeadingLevelTidier
+from .heading_levels import HeadingLevelCondenser
 from .blockwrapper import NonBlockWrapper
 
-__all__ = ["HeadingLevelTidier", "NonBlockWrapper"]
+__all__ = ["HeadingLevelCondenser", "NonBlockWrapper"]

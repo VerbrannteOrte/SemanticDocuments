@@ -5,7 +5,7 @@ from semdoc import logging
 logger = logging.getLogger("semdoc.analyzer.tidier.heading-level")
 
 
-class HeadingLevelTidier:
+class HeadingLevelCondenser:
     def __init__(self):
         self.name = "heading-level-tidier"
 

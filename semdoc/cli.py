@@ -7,7 +7,7 @@ from rich import pretty
 from semdoc.reader import load_path
 from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer, Tablelizer
 from semdoc.analyzer import surya
-from semdoc.analyzer.tidier import HeadingLevelTidier, NonBlockWrapper
+from semdoc.analyzer.tidier import HeadingLevelCondenser, NonBlockWrapper
 from semdoc.gui import show_boxes
 from semdoc.writer import get_writer
 
@@ -56,8 +56,8 @@ def main(
     logical_pipeline.add(tablelizer)
     logicalizer = Logicalizer()
     logical_pipeline.add(logicalizer)
-    heading_level_tidier = HeadingLevelTidier()
-    logical_pipeline.add(heading_level_tidier)
+    heading_level_condenser = HeadingLevelCondenser()
+    logical_pipeline.add(heading_level_condenser)
     non_block_wrapper = NonBlockWrapper()
     logical_pipeline.add(non_block_wrapper)
 

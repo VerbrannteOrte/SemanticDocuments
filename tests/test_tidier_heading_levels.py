@@ -1,5 +1,5 @@
 from semdoc.structure import Element, ElementType as ET
-from semdoc.analyzer.tidier import HeadingLevelTidier
+from semdoc.analyzer.tidier import HeadingLevelCondenser
 
 
 def test_h1h2h3():
@@ -13,7 +13,7 @@ def test_h1h2h3():
     s.add(h1)
     s.add(h2)
     s.add(h3)
-    out = HeadingLevelTidier().run(s)
+    out = HeadingLevelCondenser().run(s)
     assert s.to_dict() == out.to_dict()
 
 
@@ -22,7 +22,7 @@ def test_h2():
     h2 = Element(ET.Heading2)
     h2.set_text("heading2", "test")
     inp.add(h2)
-    out = HeadingLevelTidier().run(inp)
+    out = HeadingLevelCondenser().run(inp)
     exp = Element(ET.Document)
     h1 = Element(ET.Heading1)
     h1.set_text("heading2", "test")
@@ -35,7 +35,7 @@ def test_h6():
     h6 = Element(ET.Heading6)
     h6.set_text("heading6", "test")
     inp.add(h6)
-    out = HeadingLevelTidier().run(inp)
+    out = HeadingLevelCondenser().run(inp)
     exp = Element(ET.Document)
     h1 = Element(ET.Heading1)
     h1.set_text("heading6", "test")
@@ -64,7 +64,7 @@ def test_h1h3_h6_h3_h6_h1():
     h1.set_text("heading1", "test")
     inp.add(h1)
 
-    out = HeadingLevelTidier().run(inp)
+    out = HeadingLevelCondenser().run(inp)
 
     exp = Element(ET.Document)
     h1 = Element(ET.Heading1)
