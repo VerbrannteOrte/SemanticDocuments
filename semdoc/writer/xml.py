@@ -17,11 +17,6 @@ class XMLFormatter:
                 tag = "Document"
             case EType.Partition:
                 tag = "Region"
-                region = element.get_property("region")
-                attrib["x"] = str(region.x)
-                attrib["y"] = str(region.y)
-                attrib["width"] = str(region.width)
-                attrib["height"] = str(region.height)
             case EType.Page:
                 tag = "Page"
                 page_no = element.get("page_no")
@@ -43,6 +38,12 @@ class XMLFormatter:
                 tag = "TableRow"
             case EType.TableCell:
                 tag = "TableCell"
+        region = element.region()
+        if region:
+            attrib["x"] = str(region.x)
+            attrib["y"] = str(region.y)
+            attrib["width"] = str(region.width)
+            attrib["height"] = str(region.height)
         if parent is None:
             node = ET.Element(tag, attrib)
         else:
