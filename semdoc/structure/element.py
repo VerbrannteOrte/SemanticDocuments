@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Self
 from enum import StrEnum, auto
 from semdoc import logging
+from .region import Region
 
 logger = logging.getLogger("semdoc.element")
 
@@ -22,6 +23,8 @@ class ElementType(StrEnum):
     Partition = auto()  # a physical area of some significance
     TextLine = auto()  # a physical area containing a continuous line of text
     Table = auto()  # a logical table
+    TableRow = auto()
+    TableCell = auto()
 
     @property
     def is_block(self):
@@ -31,6 +34,7 @@ class ElementType(StrEnum):
             "heading3",
             "heading4",
             "paragraph",
+            "tablecell",
         ]
 
 
@@ -43,6 +47,8 @@ def is_logical(element):
         ElementType.Heading4,
         ElementType.Paragraph,
         ElementType.Table,
+        ElementType.TableRow,
+        ElementType.TableCell,
         ElementType.TextLine,
     ]
     return element.category in logical_categories
@@ -53,6 +59,13 @@ def geometric_sorter(element):
     page = region.page_no
     x, y = region.x, region.y
     return (page, x + y * 5)
+
+
+def table_sorter(element):
+    region = element.region()
+    page = region.page_no
+    x, y = region.x, region.y
+    return (page, y, x)
 
 
 # class Element:
@@ -150,12 +163,12 @@ class Element:
         return self.children[index]
 
     def get_text(self):
-        try:
+        if "text" in self.properties:
             return self.get_property("text")
-        except KeyError:
+        else:
             return ""
 
-    def region(self):
+    def region(self) -> Region:
         return self.get("region")
 
     def children_ordered(self):

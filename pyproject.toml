@@ -36,6 +36,7 @@ python-lsp-server = {extras = ["rope"], version = "^1.11.0"}
 lxml = "^5.2.2"
 
 pymupdf = "^1.24.9"
+camelot-py = "^0.11.0"
 [tool.poetry.scripts]
 semdoc = "semdoc.cli:run"
 semdoc_opencv = "semdoc.deprecated.opencv2:segment_image_into_blocks"

@@ -72,6 +72,23 @@ class Region:
         ]
         return all(similar)
 
+    @property
+    def x2(self):
+        return self.x + self.width
+
+    @property
+    def y2(self):
+        return self.y + self.height
+
+    def incorporate(self, other: Self):
+        """Expand the region to fully cover other"""
+        self.x = min(self.x, other.x)
+        self.y = min(self.y, other.y)
+        x2 = max(self.x2, other.x2)
+        y2 = max(self.y2, other.y2)
+        self.width = x2 - self.x
+        self.height = y2 - self.y
+
     def encompasses(self, other: Self) -> bool:
         if type(other) is not type(self):
             return False
@@ -91,6 +108,60 @@ class Region:
                 y + h > other.y + other.height,
             ]
         )
+
+    def coverage(self, other: Self) -> float:
+        """Percentage of other region covered by this region"""
+        overlap_x1 = max(self.x, other.x)
+        overlap_y2 = max(self.y, other.y)
+        overlap_x2 = min(self.x + self.width, other.x + other.width)
+        overlap_y2 = min(self.y + self.height, other.y + other.height)
+        overlap_width = overlap_x2 - overlap_x1
+        overlap_height = overlap_y2 - overlap_y1
+        overlap_area = overlap_width * overlap_height
+        other_area = other.width * height.height
+        return overlap_area / other_area
+
+    def coverage_y(self, other: Self) -> float:
+        """Percentage of the vertical size of the other region that is covered by this region"""
+        overlap_top = max(self.y, other.y)
+        overlap_bottom = min(self.y + self.height, other.y + other.height)
+        overlap_height = overlap_bottom - overlap_top
+        return overlap_height / other.height
+
+    def coverage_x(self, other: Self) -> float:
+        """Percentage of the horizontal size of the other region that is covered by this region"""
+        overlap_top = max(self.x, other.x)
+        overlap_bottom = min(self.x + self.width, other.x + other.width)
+        overlap_width = overlap_bottom - overlap_top
+        return overlap_width / other.width
+
+    def overlaps(self, other: Self) -> bool:
+        return self.overlaps_x(other) and self.overlaps_y(other)
+
+    def overlaps_x(self, other: Self) -> bool:
+        if self.page_no != other.page_no:
+            return False
+        return other.x <= self.x <= other.x2 or self.x <= other.x <= self.x2
+
+    def overlaps_y(self, other: Self) -> bool:
+        if self.page_no != other.page_no:
+            return False
+        return other.y <= self.y <= other.y2 or self.y <= other.y <= self.y2
+
+    def intersection(self, other: Self, primary: bool = False) -> Self:
+        """Return the intersection of self and other as new region"""
+        if self.page_no != other.page_no:
+            return None
+        if not self.overlaps(other):
+            return None
+        x = max(self.x, other.x)
+        y = max(self.y, other.y)
+        x2 = min(self.x2, other.x2)
+        y2 = min(self.y2, other.y2)
+        w = x2 - x
+        h = y2 - y
+        intersection = Region(self.document, self.page_no, x, y, w, h, primary)
+        return intersection
 
     def get_bitmap(self) -> Image:
         return self.document.get_region_bitmap(

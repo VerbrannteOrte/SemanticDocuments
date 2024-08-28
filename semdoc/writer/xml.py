@@ -11,7 +11,7 @@ class XMLFormatter:
 
     def encode_element(self, element, parent=None):
         attrib = {}
-        tag = "Element"
+        tag = str(element.category)
         match element.category:
             case EType.Document:
                 tag = "Document"
@@ -37,12 +37,18 @@ class XMLFormatter:
                 tag = "H4"
             case EType.Paragraph:
                 tag = "Paragraph"
+            case EType.Table:
+                tag = "Table"
+            case EType.TableRow:
+                tag = "TableRow"
+            case EType.TableCell:
+                tag = "TableCell"
         if parent is None:
             node = ET.Element(tag, attrib)
         else:
             node = ET.SubElement(parent, tag, attrib)
         node.text = element.get_text()
-        for child in element.iter_children():
+        for child in element.children:
             self.encode_element(child, node)
         return node
 

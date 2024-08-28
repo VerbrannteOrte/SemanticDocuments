@@ -14,7 +14,7 @@ class Logicalizer:
         for element in elements:
             if element.category.is_block:
                 continue
-            texts.append(element.get_text())
+            texts.append(element.get_text().strip())
             child_texts = self.collect_text(
                 sorted(element.children, key=geometric_sorter)
             )

@@ -54,7 +54,7 @@ class ImageWidget(QtWidgets.QWidget):
 
 
 def show_boxes(doc, structure):
-    first_page = structure.children[0]
+    first_page = doc.physical_structure().children[0]
     image = first_page.region().get_bitmap()
     app = QApplication(sys.argv)
     window = QtWidgets.QMainWindow()

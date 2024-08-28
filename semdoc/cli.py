@@ -5,7 +5,7 @@ import typer
 from rich import pretty
 
 from semdoc.reader import load_path
-from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer
+from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer, Tablelizer
 from semdoc.analyzer import surya
 from semdoc.gui import show_boxes
 from semdoc.writer import get_writer
@@ -51,19 +51,19 @@ def main(
     logical_pipeline = Sequential()
     organizer = TreeOrganizer()
     logical_pipeline.add(organizer)
+    tablelizer = Tablelizer()
+    logical_pipeline.add(tablelizer)
     logicalizer = Logicalizer()
     logical_pipeline.add(logicalizer)
 
     ocr_result = ocr_pipeline.run(physical)
-    if visualize_result:
-        tree_structure = organizer.run(ocr_result)
-        show_boxes(doc, tree_structure)
-
     logical_result = logical_pipeline.run(ocr_result)
+
     format = output.suffix[1:]
     writer = get_writer(format)(logical_result)
     writer.write_file(output)
-
+    if visualize_result:
+        show_boxes(doc, logical_result)
     if print_result:
         pretty.pprint(logical_result.to_dict())
 
