@@ -1,0 +1,88 @@
+from semdoc.structure import Element, ElementType as ET
+from semdoc.analyzer.tidier import HeadingLevelTidier
+
+
+def test_h1h2h3():
+    s = Element(ET.Document)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading1", "test")
+    h2 = Element(ET.Heading2)
+    h2.set_text("heading2", "test")
+    h3 = Element(ET.Heading3)
+    h3.set_text("heading3", "test")
+    s.add(h1)
+    s.add(h2)
+    s.add(h3)
+    out = HeadingLevelTidier().run(s)
+    assert s.to_dict() == out.to_dict()
+
+
+def test_h2():
+    inp = Element(ET.Document)
+    h2 = Element(ET.Heading2)
+    h2.set_text("heading2", "test")
+    inp.add(h2)
+    out = HeadingLevelTidier().run(inp)
+    exp = Element(ET.Document)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading2", "test")
+    exp.add(h1)
+    assert out.to_dict() == exp.to_dict()
+
+
+def test_h6():
+    inp = Element(ET.Document)
+    h6 = Element(ET.Heading6)
+    h6.set_text("heading6", "test")
+    inp.add(h6)
+    out = HeadingLevelTidier().run(inp)
+    exp = Element(ET.Document)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading6", "test")
+    exp.add(h1)
+    assert out.to_dict() == exp.to_dict()
+
+
+def test_h1h3_h6_h3_h6_h1():
+    inp = Element(ET.Document)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading1", "test")
+    inp.add(h1)
+    h3 = Element(ET.Heading3)
+    h3.set_text("heading3", "test")
+    inp.add(h3)
+    h6 = Element(ET.Heading6)
+    h6.set_text("heading6", "test")
+    inp.add(h6)
+    h3 = Element(ET.Heading3)
+    h3.set_text("heading3", "test")
+    inp.add(h3)
+    h6 = Element(ET.Heading6)
+    h6.set_text("heading6", "test")
+    inp.add(h6)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading1", "test")
+    inp.add(h1)
+
+    out = HeadingLevelTidier().run(inp)
+
+    exp = Element(ET.Document)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading1", "test")
+    exp.add(h1)
+    h2 = Element(ET.Heading2)
+    h2.set_text("heading3", "test")
+    exp.add(h2)
+    h3 = Element(ET.Heading3)
+    h3.set_text("heading6", "test")
+    exp.add(h3)
+    h2 = Element(ET.Heading2)
+    h2.set_text("heading3", "test")
+    exp.add(h2)
+    h3 = Element(ET.Heading3)
+    h3.set_text("heading6", "test")
+    exp.add(h3)
+    h1 = Element(ET.Heading1)
+    h1.set_text("heading1", "test")
+    exp.add(h1)
+    assert out.to_dict() == exp.to_dict()

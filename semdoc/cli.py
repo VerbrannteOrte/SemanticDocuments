@@ -7,6 +7,7 @@ from rich import pretty
 from semdoc.reader import load_path
 from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer, Tablelizer
 from semdoc.analyzer import surya
+from semdoc.analyzer.tidier import HeadingLevelTidier
 from semdoc.gui import show_boxes
 from semdoc.writer import get_writer
 
@@ -55,6 +56,8 @@ def main(
     logical_pipeline.add(tablelizer)
     logicalizer = Logicalizer()
     logical_pipeline.add(logicalizer)
+    heading_level_tidier = HeadingLevelTidier()
+    logical_pipeline.add(heading_level_tidier)
 
     ocr_result = ocr_pipeline.run(physical)
     logical_result = logical_pipeline.run(ocr_result)
