@@ -1,3 +1,4 @@
+from diskcache import Cache
 import logging
 import multiprocessing
 import pytest
@@ -103,3 +104,62 @@ def test_name_keyword_remote(monkeypatch, server, caplog):
     assert sum == 42
     assert calls_before == helper.local_calls
     assert "helper-multiplier" in caplog.text
+
+
+def test_rpc_before_cache_local(monkeypatch, tmp_path):
+    monkeypatch.delenv("SEMDOC_XMLRPX", raising=False)
+    monkeypatch.setattr(helper.cache, "cache", Cache(directory=tmp_path / "cache"))
+    calls_before = helper.local_calls
+    diff = helper.sub(43, 1)
+    assert diff == 42
+    # first call should be processed locally
+    assert helper.local_calls == calls_before + 1
+    diff = helper.sub(43, 1)
+    assert diff == 42
+    # second call should be cached
+    assert helper.local_calls == calls_before + 1
+
+
+def test_rpc_before_cache_remote(monkeypatch, server, tmp_path):
+    monkeypatch.setenv("SEMDOC_XMLRPC", server)
+    monkeypatch.setattr(helper.cache, "cache", Cache(directory=tmp_path / "cache"))
+    calls_before = helper.local_calls
+    diff = helper.sub(43, 1)
+    assert diff == 42
+    # should be processed on server
+    assert helper.local_calls == calls_before
+    monkeypatch.delenv("SEMDOC_XMLRPC")
+    diff = helper.sub(43, 1)
+    assert diff == 42
+    # this is not in the cache yet
+    assert helper.local_calls == calls_before + 1
+
+
+def test_cache_before_rpc_local(monkeypatch, tmp_path):
+    monkeypatch.delenv("SEMDOC_XMLRPC", raising=False)
+    monkeypatch.setattr(helper.cache, "cache", Cache(directory=tmp_path / "cache"))
+    calls_before = helper.local_calls
+    quot = helper.div(84, 2)
+    assert quot == 42
+    # first call is processed locally
+    assert helper.local_calls == calls_before + 1
+    quot = helper.div(84, 2)
+    assert quot == 42
+    # second call is cached
+    assert helper.local_calls == calls_before + 1
+
+
+def test_cache_before_rpc_remote(monkeypatch, server, tmp_path):
+    monkeypatch.setenv("SEMDOC_XMLRPC", server)
+    monkeypatch.setattr(helper.cache, "cache", Cache(directory=tmp_path / "cache"))
+    calls_before = helper.local_calls
+    quot = helper.div(84, 2)
+    assert quot == 42
+    # first call is processed on server
+    assert helper.local_calls == calls_before
+
+    monkeypatch.delenv("SEMDOC_XMLRPC")
+    quot = helper.div(84, 2)
+    assert quot == 42
+    # second call is cached
+    assert helper.local_calls == calls_before

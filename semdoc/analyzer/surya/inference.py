@@ -15,8 +15,8 @@ from semdoc.cache import cache_for
 from semdoc.xmlrpc import remote
 
 
-@remote("surya_text_recognition")
 @cache_for("image", "languages")
+@remote("surya_text_recognition")
 def text_recognition(image, languages):
     model = load_recognition_model()
     processor = load_recognition_processor()
@@ -24,8 +24,8 @@ def text_recognition(image, languages):
     return (predictions[0][0], predictions[1][0])
 
 
-@remote("surya_text_detection")
 @cache_for("image")
+@remote("surya_text_detection")
 def text_detection(image):
     model = load_detection_model()
     processor = load_detection_processor()
@@ -33,8 +33,8 @@ def text_detection(image):
     return predictions[0]
 
 
-@remote("surya_layout_detection")
 @cache_for("image")
+@remote("surya_layout_detection")
 def layout_detection(image):
     model = load_detection_model(checkpoint=surya_settings.LAYOUT_MODEL_CHECKPOINT)
     processor = load_detection_processor(
