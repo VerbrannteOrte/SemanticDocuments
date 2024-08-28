@@ -109,17 +109,18 @@ class Region:
             ]
         )
 
+    @property
+    def area(self):
+        return self.width * self.height
+
     def coverage(self, other: Self) -> float:
         """Percentage of other region covered by this region"""
-        overlap_x1 = max(self.x, other.x)
-        overlap_y2 = max(self.y, other.y)
-        overlap_x2 = min(self.x + self.width, other.x + other.width)
-        overlap_y2 = min(self.y + self.height, other.y + other.height)
-        overlap_width = overlap_x2 - overlap_x1
-        overlap_height = overlap_y2 - overlap_y1
-        overlap_area = overlap_width * overlap_height
-        other_area = other.width * height.height
-        return overlap_area / other_area
+        if self.page_no != other.page_no:
+            return 0
+        if not self.overlaps(other):
+            return 0
+        intersection = self.intersection(other, False)
+        return intersection.area / other.area
 
     def coverage_y(self, other: Self) -> float:
         """Percentage of the vertical size of the other region that is covered by this region"""
