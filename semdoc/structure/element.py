@@ -17,6 +17,8 @@ class ElementType(StrEnum):
     Heading2 = auto()  # a second level heading
     Heading3 = auto()  # a third level heading
     Heading4 = auto()  # a fourth level heading
+    Heading5 = auto()  # a fourth level heading
+    Heading6 = auto()  # a fourth level heading
     Paragraph = auto()  # a logical paragraph of text
     TextArea = auto()  # a physical box containing text
     TableArea = auto()  # a physical box containig the depiction of a table
@@ -25,6 +27,9 @@ class ElementType(StrEnum):
     Table = auto()  # a logical table
     TableRow = auto()
     TableCell = auto()
+    PageHeader = auto()
+    PageFooter = auto()
+    Figure = auto()
 
     @property
     def is_block(self):
@@ -33,8 +38,24 @@ class ElementType(StrEnum):
             "heading2",
             "heading3",
             "heading4",
+            "heading5",
+            "heading6",
             "paragraph",
             "tablecell",
+            "table",
+            "pageheader",
+            "pagefooter",
+        ]
+
+    @property
+    def is_heading(self):
+        return str(self) in [
+            "heading1",
+            "heading2",
+            "heading3",
+            "heading4",
+            "heading5",
+            "heading6",
         ]
 
 

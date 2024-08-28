@@ -10,9 +10,20 @@ logger = logging.getLogger("semdoc.writer.pdf")
 
 cat2tag = {
     ET.Heading1: "H1",
+    ET.Heading2: "H2",
+    ET.Heading3: "H3",
+    ET.Heading4: "H4",
+    ET.Heading5: "H5",
+    ET.Heading6: "H6",
     ET.Paragraph: "P",
     ET.Document: "",
     ET.TextLine: "",
+    ET.PageHeader: "",
+    ET.PageFooter: "",
+    ET.Figure: "Figure",
+    ET.Table: "Table",
+    ET.TableRow: "TR",
+    ET.TableCell: "TD",
 }
 
 

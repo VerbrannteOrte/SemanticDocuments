@@ -23,9 +23,11 @@ class Layout:
                 w, h = x2 - x1, y2 - y1
                 category = {
                     "Text": ET.Paragraph,
-                    "Section-header": ET.Heading1,
+                    "Section-header": ET.Heading2,
                     "Table": ET.Table,
-                    "Title": ET.Heading2,
+                    "Title": ET.Heading1,
+                    "Page-header": ET.PageHeader,
+                    "Figure": ET.Figure,
                 }
                 area = Element(category[box.label])
                 area_region = region.create_partition(x1, y1, w, h)
