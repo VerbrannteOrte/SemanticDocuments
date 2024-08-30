@@ -6,6 +6,7 @@ from PIL.Image import Image
 import functools
 from surya.schema import TextDetectionResult
 from copy import copy
+from numpy import ndarray
 
 from semdoc import logging
 
@@ -17,10 +18,10 @@ ENOVAL = ("ENOVAL",)
 
 
 def convert_key(key):
-    if isinstance(key, Image):
+    if isinstance(key, Image) or isinstance(key, ndarray):
         data = key.tobytes()
-        key = sha256(data).digest()
-    if isinstance(key, TextDetectionResult):
+        key = (type(key), sha256(data).digest())
+    elif isinstance(key, TextDetectionResult):
         key = copy(key)
         data = key.heatmap.tobytes()
         key.heatmap = sha256(data).digest()
