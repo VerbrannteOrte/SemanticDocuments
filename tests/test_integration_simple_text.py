@@ -5,9 +5,9 @@ from rich import pretty
 
 from semdoc import reader
 from semdoc import analyzer
-from semdoc.analyzer import surya, opencv, tesseract
-from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer
+from semdoc.analyzer import opencv, tesseract
 from semdoc.writer import get_writer
+from semdoc.pipeline import semdoc_pipeline
 
 import utils
 from documents import simple_text
@@ -38,25 +38,11 @@ def test_bitmap_pdf(tmp_path, simple_text):
     doc = reader.load_path(simple_text["path_png"])
     physical = doc.physical_structure()
 
-    ocr_pipeline = Sequential()
-    text_detector = surya.TextLines()
-    ocr_pipeline.add(text_detector)
-    text_recognizer = surya.OCR()
-    ocr_pipeline.add(text_recognizer)
-    layout_recognizer = surya.Layout()
-    ocr_pipeline.add(layout_recognizer)
-
-    logical_pipeline = Sequential()
-    organizer = TreeOrganizer()
-    logical_pipeline.add(organizer)
-    logicalizer = Logicalizer()
-    logical_pipeline.add(logicalizer)
-
-    ocr_result = ocr_pipeline.run(physical)
-    logical_result = logical_pipeline.run(ocr_result)
+    pipeline = semdoc_pipeline()
+    logical = pipeline.run(physical)
 
     dest = tmp_path / Path("simple_text.pdf")
-    writer = get_writer("pdf")(logical_result)
+    writer = get_writer("pdf")(logical)
     writer.write_file(dest)
 
     validation_results = utils.validate_verapdf(dest, flavour="ua1")

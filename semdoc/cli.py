@@ -5,11 +5,9 @@ import typer
 from rich import pretty
 
 from semdoc.reader import load_path
-from semdoc.analyzer import Sequential, TreeOrganizer, Logicalizer, Tablelizer
-from semdoc.analyzer import surya
-from semdoc.analyzer.tidier import HeadingLevelCondenser, NonBlockWrapper
 from semdoc.gui import show_boxes
 from semdoc.writer import get_writer
+from semdoc.pipeline import semdoc_pipeline
 
 
 def main(
@@ -41,36 +39,16 @@ def main(
     doc = load_path(input)
     physical = doc.physical_structure()
 
-    ocr_pipeline = Sequential()
-    text_detector = surya.TextLines()
-    ocr_pipeline.add(text_detector)
-    text_recognizer = surya.OCR()
-    ocr_pipeline.add(text_recognizer)
-    layout_recognizer = surya.Layout()
-    ocr_pipeline.add(layout_recognizer)
-
-    logical_pipeline = Sequential()
-    organizer = TreeOrganizer()
-    logical_pipeline.add(organizer)
-    tablelizer = Tablelizer()
-    logical_pipeline.add(tablelizer)
-    logicalizer = Logicalizer()
-    logical_pipeline.add(logicalizer)
-    heading_level_condenser = HeadingLevelCondenser()
-    logical_pipeline.add(heading_level_condenser)
-    non_block_wrapper = NonBlockWrapper()
-    logical_pipeline.add(non_block_wrapper)
-
-    ocr_result = ocr_pipeline.run(physical)
-    logical_result = logical_pipeline.run(ocr_result)
+    pipeline = semdoc_pipeline()
+    logical = pipeline.run(physical)
 
     format = output.suffix[1:]
-    writer = get_writer(format)(logical_result)
+    writer = get_writer(format)(logical)
     writer.write_file(output)
     if visualize_result:
-        show_boxes(doc, logical_result)
+        show_boxes(doc, logical)
     if print_result:
-        pretty.pprint(logical_result.to_dict())
+        pretty.pprint(logical.to_dict())
 
 
 def run():
