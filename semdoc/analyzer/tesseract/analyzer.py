@@ -18,7 +18,6 @@ class Analyzer:
     def analyze_regions(self, element):
         texts = []
         regions = list(element.iter_regions())
-        print(f"regions: {regions}")
         for region in element.iter_regions():
             bitmap = region.get_bitmap_numpy()
             text = self.get_text(bitmap).strip()
@@ -27,10 +26,8 @@ class Analyzer:
         element.set_text(text, "tesseract")
 
     def analyze_children(self, element):
-        print(f"element: {element}")
         self.analyze_regions(element)
         for child in element.children:
-            print(f"child: {child}")
             self.analyze_children(child)
 
     def run(self, structure):

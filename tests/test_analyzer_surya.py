@@ -34,6 +34,6 @@ def test_layout_simple(simple_text):
 
     output = analyzer.run(doc.physical_structure())
     paragraphs = [p for p in output.children[0].children if p.category == ET.Paragraph]
-    headings = [h for h in output.children[0].children if h.category == ET.Heading1]
+    headings = [h for h in output.children[0].children if h.category.is_heading]
     assert len(paragraphs) == 2
     assert len(headings) == 1

@@ -21,8 +21,8 @@ def server():
     # it is most convenient to fork here, because this way we have a separate
     # process and the makeshift call counter in helpers.xmlrpc works. this
     # produces a warning which we ignore via pyproject.toml
-    multiprocessing.set_start_method("fork")
-    p = multiprocessing.Process(target=semdoc.server.run, args=(host, port))
+    mp = multiprocessing.get_context("fork")
+    p = mp.Process(target=semdoc.server.run, args=(host, port))
     p.start()
     while True:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

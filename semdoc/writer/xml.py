@@ -1,6 +1,7 @@
 from pathlib import Path
 import xml.etree.ElementTree as ET
 from semdoc.structure import Document, Region, ElementType as EType
+from semdoc.structure.element import geometric_sorter
 
 
 class XMLFormatter:
@@ -49,7 +50,7 @@ class XMLFormatter:
         else:
             node = ET.SubElement(parent, tag, attrib)
         node.text = element.get_text()
-        for child in element.children:
+        for child in sorted(element.children, key=geometric_sorter):
             self.encode_element(child, node)
         return node
 

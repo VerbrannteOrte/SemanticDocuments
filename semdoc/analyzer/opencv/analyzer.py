@@ -11,9 +11,7 @@ class Analyzer:
 
         image = region.get_bitmap_numpy()
 
-        print(f"image: {image.shape}")
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-        print(f"gray {gray.shape}")
 
         # Apply adaptive thresholding to binarize the image
         thresh = cv2.adaptiveThreshold(

@@ -58,4 +58,5 @@ filterwarnings = [
   "ignore::DeprecationWarning:llpdf",
   "ignore::FutureWarning:huggingface_hub",
   "ignore::DeprecationWarning:multiprocessing",
+  "ignore::FutureWarning:transformers",
 ]
