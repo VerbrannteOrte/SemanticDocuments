@@ -361,7 +361,7 @@ class PDFObject:
         return self.obj.set_content(content)
 
     def append_stream(self, text):
-        new_data = text.encode("cp1252")
+        new_data = text.encode("cp1252", errors="replace")
         if self.obj.stream is not None:
             prev_data = self.obj.stream.decode()
             new_data = prev_data + b"\n" + new_data
