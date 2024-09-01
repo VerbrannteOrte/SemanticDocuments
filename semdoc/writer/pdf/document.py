@@ -328,6 +328,7 @@ class PDFPage:
             rendering_mode = 0
         else:
             rendering_mode = 3
+        text = text.translate({ord("\\"): "\\\\", ord("("): "\\(", ord(")"): "\\)"})
         instructions = f"""
         {tag_line}
         q
